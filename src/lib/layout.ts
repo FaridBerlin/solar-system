@@ -9,11 +9,17 @@ export const DESIGN_MIN_RADIUS = 70;
 export const DESIGN_MAX_RADIUS = 440;
 /** Half the design canvas: outermost orbit + planet radius + room for the name label. */
 export const DESIGN_EXTENT = 470;
+/** Outermost orbit + that planet's radius, i.e. how far a planet centre can sit from the sun. */
+const DESIGN_OUTER_ORBIT = 455;
 
 /** Smallest a planet is ever drawn, so Mercury stays visible when scaled down. */
 const MIN_DOT_SIZE = 10;
 /** Minimum tap target (WCAG 2.5.8 target size), independent of the drawn dot. */
 const MIN_HIT_SIZE = 44;
+/** Room reserved outside the outermost orbit for its hit area and name label. */
+const EDGE_MARGIN = MIN_HIT_SIZE / 2 + 8;
+/** The map is never scaled below this, so it can never collapse into nothing. */
+const MIN_SCALE = 0.1;
 
 export interface PlanetLayout {
   /** Orbit radius in CSS pixels. */
@@ -27,11 +33,16 @@ export interface PlanetLayout {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
-/** Scale factor that fits the full system inside `width` x `height`, capped at 1. */
+/**
+ * Scale factor that fits the full system inside `width` x `height`, capped at 1.
+ * Returns 0 only before the stage has been measured. Once measured it never returns
+ * less than MIN_SCALE: a squeezed stage scrolls rather than swallowing the map.
+ */
 export function computeScale(width: number, height: number): number {
   if (width <= 0 || height <= 0) return 0;
-  const box = Math.min(width, height) - 16; // small gutter so the outer orbit isn't flush
-  return clamp(box / (DESIGN_EXTENT * 2), 0, 1);
+  // Reserve EDGE_MARGIN so the outermost planet's 44px hit area stays inside the box.
+  const usableRadius = Math.min(width, height) / 2 - EDGE_MARGIN;
+  return clamp(usableRadius / DESIGN_OUTER_ORBIT, MIN_SCALE, 1);
 }
 
 export function computeLayout(planetList: PlanetData[], scale: number): PlanetLayout[] {

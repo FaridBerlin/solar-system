@@ -19,8 +19,10 @@ export function Controls({
 }: ControlsProps) {
   return (
     <div className="relative z-20 flex w-full shrink-0 justify-center px-2 pb-3">
-      {/* flex-wrap keeps every control reachable instead of clipping them at narrow widths */}
-      <div className="flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl border border-gray-700 bg-gray-900/80 px-4 py-3 backdrop-blur-md">
+      {/* flex-wrap keeps every control reachable instead of clipping them at narrow widths.
+          min-w-0 on this row and on each shrinkable child stops a group from overflowing
+          the bar (a centred overflowing row gets clipped at the left edge). */}
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl border border-gray-700 bg-gray-900/80 px-3 py-3 backdrop-blur-md sm:w-auto sm:px-4">
         <button
           type="button"
           onClick={onTogglePlay}
@@ -38,8 +40,8 @@ export function Controls({
           )}
         </button>
 
-        <div className="flex items-center gap-2">
-          <label htmlFor="speed-slider" className="text-sm text-gray-400">
+        <div className="flex min-w-0 flex-1 basis-40 items-center gap-2">
+          <label htmlFor="speed-slider" className="shrink-0 text-sm text-gray-400">
             Speed
           </label>
           <input
@@ -51,12 +53,12 @@ export function Controls({
             value={speed}
             onChange={event => onSpeedChange(parseFloat(event.target.value))}
             aria-valuetext={`${speed.toFixed(1)} times`}
-            className="h-2 w-24 cursor-pointer appearance-none rounded-lg bg-gray-700 accent-blue-500 sm:w-28"
+            className="h-2 w-24 min-w-0 flex-1 cursor-pointer appearance-none rounded-lg bg-gray-700 accent-blue-500 sm:w-28 sm:flex-none"
           />
-          <span className="w-12 font-mono text-sm text-white">{speed.toFixed(1)}x</span>
+          <span className="w-12 shrink-0 font-mono text-sm text-white">{speed.toFixed(1)}x</span>
         </div>
 
-        <div className="flex gap-1" role="group" aria-label="Speed presets">
+        <div className="flex max-w-full flex-wrap justify-center gap-1" role="group" aria-label="Speed presets">
           {SPEED_PRESETS.map(preset => (
             <button
               key={preset}
@@ -76,12 +78,13 @@ export function Controls({
           type="button"
           onClick={onTogglePauseOnSelect}
           aria-pressed={pauseOnSelect}
-          title="Pause the orbits while a planet's info card is open"
-          className={`rounded px-2 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+          aria-label="Auto-pause the orbits while a planet's info card is open"
+          title="Auto-pause the orbits while a planet's info card is open"
+          className={`max-w-full rounded px-2 py-1 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
             pauseOnSelect ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
           }`}
         >
-          Pause on select
+          Auto-pause
         </button>
       </div>
     </div>

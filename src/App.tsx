@@ -148,7 +148,7 @@ export default function App() {
   }, [selectedId, closePanel]);
 
   return (
-    <div className="relative flex h-dvh w-full flex-col overflow-hidden bg-gray-950">
+    <div className="relative flex h-dvh w-full flex-col overflow-x-hidden overflow-y-auto bg-gray-950">
       <StarsBackground />
 
       {/* Title */}
@@ -156,7 +156,7 @@ export default function App() {
         <h1 className="text-xl font-bold tracking-wide text-white sm:text-2xl md:text-3xl">
           🌌 Solar System Explorer
         </h1>
-        <p className="mt-1 text-xs text-gray-400 sm:text-sm">
+        <p className="mt-1 text-xs text-gray-400 [@media(max-height:420px)]:hidden sm:text-sm">
           Select a planet (click, or Tab and press Enter) to learn more
         </p>
       </header>
@@ -164,7 +164,7 @@ export default function App() {
       {/* Solar System View */}
       <div
         ref={stageRef}
-        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden"
+        className="relative flex min-h-[280px] flex-1 shrink-0 items-center justify-center overflow-hidden"
       >
         {scale > 0 && (
           <SolarSystem
