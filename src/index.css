@@ -44,10 +44,23 @@ input[type="range"]::-moz-range-thumb {
   border: 2px solid #1d4ed8;
 }
 
-/* Sun pulse animation */
-@keyframes sun-pulse {
-  0%, 100% { box-shadow: 0 0 40px 15px rgba(255, 165, 0, 0.5), 0 0 80px 30px rgba(255, 100, 0, 0.3); }
-  50% { box-shadow: 0 0 50px 20px rgba(255, 165, 0, 0.6), 0 0 100px 40px rgba(255, 100, 0, 0.4); }
+/* Planet dots: hover/focus/selected states share one look, driven by the
+   `group` class on the surrounding planet button. */
+.planet-dot {
+  box-shadow: 0 0 8px 2px var(--planet-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.group:hover .planet-dot,
+.group:focus-visible .planet-dot,
+.planet-dot.is-selected {
+  transform: scale(1.35);
+  box-shadow: 0 0 15px 5px var(--planet-glow-strong);
+}
+
+.planet-dot.is-selected {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
 
 /* Scrollbar styling */
@@ -72,4 +85,17 @@ input[type="range"]::-moz-range-thumb {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-fade-in {
+    animation: none !important;
+  }
+
+  .planet-dot,
+  input[type="range"]::-webkit-slider-thumb {
+    transition: none;
+  }
 }
